@@ -45,7 +45,7 @@ jobs:
             Write-Error "Missing web.config - required for IIS hosting"
             exit 1
           }
-          if (!(Test-Path -Path "./publish/MTC.DentalKIT.Client.Api.dll")) {
+          if (!(Test-Path -Path "./publish/${{ env.filePath }}.dll")) {
             Write-Error "Missing main DLL file"
             exit 1
           }
