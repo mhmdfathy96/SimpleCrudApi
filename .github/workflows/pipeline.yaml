@@ -1,0 +1,62 @@
+name: Deploy backend to SmarterASP.NET
+
+on:
+  workflow_dispatch: # This enables manual trigger from any branch
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+    env:
+      filePath: SimpleCrudApi
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Show directory structure
+        run: tree /F ./publish
+
+      - name: Restore dependencies
+        run: dotnet restore ${{ env.filePath }}.csproj --runtime win-x64
+
+      - name: Build
+        run: dotnet build ${{ env.filePath }}.csproj --configuration Release --no-restore
+
+      - name: Publish
+        run: >
+          dotnet publish ${{ env.filePath }}.csproj
+          --configuration Release
+          --output ./publish
+          --runtime win-x64
+          --self-contained false
+          -p:PublishReadyToRun=true
+
+      - name: Verify published files
+        run: |
+          # List all published files
+          Get-ChildItem -Path ./publish
+
+          # Check for essential files
+          if (!(Test-Path -Path "./publish/web.config")) {
+            Write-Error "Missing web.config - required for IIS hosting"
+            exit 1
+          }
+          if (!(Test-Path -Path "./publish/MTC.DentalKIT.Client.Api.dll")) {
+            Write-Error "Missing main DLL file"
+            exit 1
+          }
+
+      - name: Deploy to SmarterASP.NET via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.FTP_PATH }}
+          local-dir: ./publish/
+          dangerous-clean-slate: true
+          log-level: verbose # Changed from 'verbose: true' to 'log-level: verbose'
