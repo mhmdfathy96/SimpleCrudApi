@@ -9,7 +9,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // 👉 Use SQL Server
-var connectionString = builder.Environment.IsDevelopment() ? builder.Configuration.GetConnectionString("Default") : Environment.GetEnvironmentVariable("DefaultConnection");
+var connectionString = builder.Environment.IsDevelopment() ? builder.Configuration.GetConnectionString("Default") : Environment.GetEnvironmentVariable("Default");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 
