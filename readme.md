@@ -121,6 +121,6 @@ SimpleCrudApi/
 
 ---
 
-## 🙌 Credits
+## Credits
 
 Created to demonstrate simple practices with .NET Web API, EF Core, secrets management, and CI/CD using GitHub Actions.
