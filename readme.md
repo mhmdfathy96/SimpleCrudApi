@@ -6,7 +6,7 @@ A simple .NET 8 Web API demonstrating CRUD operations using **Entity Framework C
 
 ## 🔧 Features
 
-- Clean Web API structure
+- Clean Web API structure following the **MVC pattern**
 - Entity Framework Core (Code First)
 - Connection string management:
   - ✅ **Development**: Using `dotnet user-secrets`
